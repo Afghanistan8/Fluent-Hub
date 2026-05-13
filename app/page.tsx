@@ -267,12 +267,12 @@ function Pillars() {
     },
     {
       number: "03",
-      title: "Leaderboards",
+      title: "Prints",
       description:
-        "Multi-context reputation rankings. Architecture ready, awaiting public Prints contract.",
-      href: "/leaderboards",
-      cta: "View plan",
-      status: "soon" as const,
+        "Live reputation lookup powered by Fluent Connect. Check anyone's tiers across identity, tester, builder, influential.",
+      href: "/prints",
+      cta: "Look up Prints",
+      status: "live" as const,
     },
   ];
 

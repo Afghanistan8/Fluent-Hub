@@ -112,7 +112,7 @@ function Nav() {
         <nav className="flex items-center gap-1 text-[13px]">
           <NavLink href="/dapps">Directory</NavLink>
           <NavLink href="/network">Network</NavLink>
-          <NavLink href="/leaderboards">Leaderboards</NavLink>
+          <NavLink href="/prints">Prints</NavLink>
           <Link
             href="/submit"
             className="btn-secondary ml-3 inline-flex items-center rounded-md px-3 py-1.5 text-[13px] font-medium hover-bright"
@@ -153,7 +153,7 @@ function Footer() {
               <span className="eyebrow">Explore</span>
               <Link href="/dapps" className="text-[13px] text-muted-foreground hover:text-foreground">Directory</Link>
               <Link href="/network" className="text-[13px] text-muted-foreground hover:text-foreground">Network</Link>
-              <Link href="/leaderboards" className="text-[13px] text-muted-foreground hover:text-foreground">Leaderboards</Link>
+              <Link href="/prints" className="text-[13px] text-muted-foreground hover:text-foreground">Prints</Link>
             </div>
             <div className="flex flex-col gap-3">
               <span className="eyebrow">Resources</span>
