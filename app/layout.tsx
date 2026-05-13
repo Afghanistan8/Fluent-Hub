@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} dark`}>
       <body className="font-sans">
         <BackgroundRings />
         <Nav />
@@ -29,8 +29,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 /**
  * Stylized geometric reference to Fluent's blended execution motif.
  * Three overlapping rings represent the three VMs (EVM + SVM + Wasm).
- * Positioned bottom-right at low opacity as decorative atmosphere.
- * Not Fluent's actual logo — a defensible visual reference to their thesis.
  */
 function BackgroundRings() {
   return (
@@ -167,7 +165,7 @@ function Footer() {
         </div>
         <div className="mt-12 flex items-center justify-between border-t border-border pt-6">
           <span className="eyebrow">© 2026 Fluent Hub</span>
-          <span className="eyebrow">v1.1</span>
+          <span className="eyebrow">v1.2</span>
         </div>
       </div>
     </footer>

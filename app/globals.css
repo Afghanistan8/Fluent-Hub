@@ -4,21 +4,20 @@
 
 @layer base {
   :root {
-    /* Light mode - warm faded white, calibrated contrast */
-    --background: 250 250 248;
-    --background-elevated: 255 255 254;
-    --foreground: 17 17 20;
-    --muted: 243 243 240;
-    --muted-foreground: 100 100 110;
-    --subtle: 70 70 80;
-    --border: 226 226 222;
-    --border-strong: 198 198 192;
-    --accent: 50 120 230;
-    --accent-muted: 90 150 240;
-    --accent-foreground: 255 255 255;
-    --success: 30 150 90;
-    --warning: 200 140 30;
-    --danger: 210 60 60;
+    --background: 10 10 11;
+    --background-elevated: 16 16 18;
+    --foreground: 237 237 240;
+    --muted: 22 22 25;
+    --muted-foreground: 130 130 142;
+    --subtle: 175 175 185;
+    --border: 38 38 44;
+    --border-strong: 56 56 64;
+    --accent: 80 156 255;
+    --accent-muted: 60 110 200;
+    --accent-foreground: 250 250 252;
+    --success: 50 180 110;
+    --warning: 220 170 60;
+    --danger: 235 95 95;
   }
 
   * {
@@ -40,7 +39,7 @@
   }
 
   ::selection {
-    background: rgba(50, 120, 230, 0.18);
+    background: rgba(80, 156, 255, 0.28);
     color: rgb(var(--foreground));
   }
 
@@ -107,35 +106,34 @@
   }
   .status-dot-live {
     background: rgb(var(--success));
-    box-shadow: 0 0 0 3px rgba(30, 150, 90, 0.18);
+    box-shadow: 0 0 0 3px rgba(50, 180, 110, 0.14);
     animation: pulse 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 3px rgba(30, 150, 90, 0.18); }
-    50% { box-shadow: 0 0 0 6px rgba(30, 150, 90, 0.08); }
+    0%, 100% { box-shadow: 0 0 0 3px rgba(50, 180, 110, 0.14); }
+    50% { box-shadow: 0 0 0 6px rgba(50, 180, 110, 0.06); }
   }
   .status-dot-testnet {
     background: rgb(var(--warning));
-    box-shadow: 0 0 0 3px rgba(200, 140, 30, 0.18);
+    box-shadow: 0 0 0 3px rgba(220, 170, 60, 0.14);
   }
   .status-dot-coming-soon {
     background: rgb(var(--accent));
-    box-shadow: 0 0 0 3px rgba(50, 120, 230, 0.18);
+    box-shadow: 0 0 0 3px rgba(80, 156, 255, 0.14);
   }
   .status-dot-deprecated {
     background: rgb(var(--muted-foreground));
   }
 
-  /* Card - hairline border, subtle hover */
   .card {
     border: 1px solid rgb(var(--border));
     border-radius: 12px;
     background: rgb(var(--background-elevated));
-    transition: border-color 200ms ease-out, background-color 200ms ease-out, box-shadow 200ms ease-out;
+    transition: border-color 200ms ease-out, background-color 200ms ease-out;
   }
   .card:hover {
     border-color: rgb(var(--border-strong));
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.02);
+    background: rgb(var(--muted));
   }
 
   .data-grid {
@@ -147,11 +145,10 @@
     border: 1px solid rgb(var(--border));
   }
 
-  /* Buttons calibrated for light mode */
   .btn-primary {
-    background: linear-gradient(180deg, rgb(60, 130, 240) 0%, rgb(40, 110, 220) 100%);
+    background: linear-gradient(180deg, rgb(96, 168, 255) 0%, rgb(70, 145, 240) 100%);
     color: white;
-    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 1px 2px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 1px 2px rgba(0, 0, 0, 0.2);
     transition: filter 160ms ease-out, transform 160ms ease-out;
   }
   .btn-primary:hover {
@@ -163,14 +160,14 @@
   }
 
   .btn-secondary {
-    background: rgb(var(--background-elevated));
+    background: rgb(var(--muted));
     border: 1px solid rgb(var(--border-strong));
     color: rgb(var(--foreground));
     transition: background-color 160ms ease-out, border-color 160ms ease-out;
   }
   .btn-secondary:hover {
-    background: rgb(var(--muted));
-    border-color: rgb(176, 176, 170);
+    background: rgb(var(--background-elevated));
+    border-color: rgb(96, 96, 110);
   }
 
   .reveal {
@@ -193,11 +190,10 @@
     to { transform: translateX(-50%); }
   }
 
-  /* Subtle grid - dark lines on white */
   .grid-bg {
     background-image:
-      linear-gradient(to right, rgba(0, 0, 0, 0.025) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.025) 1px, transparent 1px);
+      linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
     background-size: 64px 64px;
   }
 
