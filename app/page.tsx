@@ -215,7 +215,7 @@ function ThreePillars() {
             number="02"
             icon={<Trophy className="h-4 w-4" />}
             title="Leaderboards"
-            description="Multi-context reputation rankings powered by Prints. See top wallets by DeFi activity, predictor accuracy, social signal, and per-project fandom."
+            description="Multi-context reputation rankings — DeFi, predictors, per-project fandom. Architecture ready, awaiting public Prints contract."
             href="/leaderboards"
             cta="View leaderboards"
             status="soon"
@@ -224,10 +224,10 @@ function ThreePillars() {
             number="03"
             icon={<BarChart3 className="h-4 w-4" />}
             title="Network"
-            description="Fluent benchmarked against zk-rollup peers. Revenue, TVL, active addresses, transaction volume — sourced from DefiLlama and L2Beat."
+            description="Fluent benchmarked against zk-rollup peers. Live revenue from api.fluent.xyz, TVL and activity from DefiLlama."
             href="/network"
-            cta="See metrics"
-            status="soon"
+            cta="See live data"
+            status="live"
           />
         </div>
       </div>
