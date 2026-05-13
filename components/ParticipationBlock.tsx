@@ -23,19 +23,23 @@ const FIELDS: {
 export function ParticipationBlock({ participation }: { participation: Participation }) {
   return (
     <section>
-      <span className="font-mono text-2xs uppercase tracking-wider text-accent">Participation</span>
-      <h2 className="mt-2 text-xl font-semibold tracking-tight">How to participate</h2>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Every listing answers the same six questions, so you can compare apps fairly.
-      </p>
-      <dl className="mt-6 grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2">
+      <div className="mb-8 flex flex-col gap-2">
+        <span className="eyebrow eyebrow-accent">Participation</span>
+        <h2 className="text-[28px] font-semibold tracking-tight">How to participate</h2>
+        <p className="text-[14px] text-muted-foreground">
+          Every listing answers the same six questions so you can compare apps fairly.
+        </p>
+      </div>
+      <dl className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2">
         {FIELDS.map(({ key, label, icon }) => (
-          <div key={key} className="flex flex-col gap-2 bg-background p-5">
-            <dt className="flex items-center gap-2 font-mono text-2xs uppercase tracking-wider text-muted-foreground">
+          <div key={key} className="flex flex-col gap-3 bg-background p-6">
+            <dt className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
               <span className="text-accent">{icon}</span>
               {label}
             </dt>
-            <dd className="text-[13px] leading-relaxed text-foreground">{participation[key]}</dd>
+            <dd className="text-[14px] leading-relaxed text-foreground">
+              {participation[key]}
+            </dd>
           </div>
         ))}
       </dl>

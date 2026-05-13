@@ -4,19 +4,21 @@
 
 @layer base {
   :root {
-    --background: 10 10 12;
-    --background-elevated: 16 16 19;
+    /* Vercel-calibrated palette: warmer near-black, more present borders */
+    --background: 10 10 11;
+    --background-elevated: 16 16 18;
     --foreground: 237 237 240;
-    --muted: 22 22 26;
-    --muted-foreground: 138 138 148;
-    --subtle: 168 168 178;
-    --border: 30 30 36;
-    --border-strong: 48 48 56;
+    --muted: 22 22 25;
+    --muted-foreground: 130 130 142;
+    --subtle: 175 175 185;
+    --border: 38 38 44;
+    --border-strong: 56 56 64;
     --accent: 80 156 255;
+    --accent-muted: 60 110 200;
     --accent-foreground: 250 250 252;
-    --success: 64 200 130;
-    --warning: 230 180 70;
-    --danger: 240 100 100;
+    --success: 50 180 110;
+    --warning: 220 170 60;
+    --danger: 235 95 95;
   }
 
   * {
@@ -29,38 +31,43 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "ss03", "cv01", "cv11";
   }
 
-  /* The signature background — a layered "blended execution" motif:
-     three overlapping circular gradients in Fluent blue, each representing
-     a different VM (EVM, SVM, Wasm) bleeding into one another.
-     Subtle enough not to interfere with content, recognizable enough
-     to give the site a visual identity. */
   body {
     min-height: 100vh;
     background-color: rgb(var(--background));
-    background-image:
-      radial-gradient(circle at 15% -10%, rgba(80, 156, 255, 0.10), transparent 45%),
-      radial-gradient(circle at 85% 5%, rgba(120, 100, 255, 0.06), transparent 40%),
-      radial-gradient(circle at 50% 0%, rgba(80, 156, 255, 0.05), transparent 50%);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
   }
 
   ::selection {
-    background: rgba(80, 156, 255, 0.25);
+    background: rgba(80, 156, 255, 0.28);
     color: rgb(var(--foreground));
   }
 
-  .tabular {
+  /* Typography defaults - the Vercel discipline */
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+  }
+
+  /* Tabular figures everywhere */
+  .tabular,
+  [data-tabular] {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
+  }
+
+  /* Focus state - visible but elegant */
+  *:focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
 @layer components {
+  /* Containers - generous on desktop */
   .container-narrow {
-    max-width: 64rem;
+    max-width: 60rem;
     margin-inline: auto;
     padding-inline: 1.5rem;
   }
@@ -74,15 +81,30 @@
   @media (min-width: 768px) {
     .container-narrow,
     .container-wide {
-      padding-inline: 2rem;
+      padding-inline: 2.5rem;
     }
   }
 
+  /* Vercel-style hover: brightness shift, no scale */
   .hover-bright {
-    transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+    transition: background-color 160ms ease-out, border-color 160ms ease-out, color 160ms ease-out;
   }
 
-  /* Status dots */
+  /* Eyebrow label - replaces the // prefix from v3 */
+  .eyebrow {
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 11px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: rgb(var(--muted-foreground));
+  }
+
+  .eyebrow-accent {
+    color: rgb(var(--accent));
+  }
+
+  /* Status dot with optional pulse */
   .status-dot {
     display: inline-block;
     width: 6px;
@@ -92,47 +114,79 @@
   }
   .status-dot-live {
     background: rgb(var(--success));
-    box-shadow: 0 0 0 3px rgba(64, 200, 130, 0.12);
-    animation: pulse 2.4s ease-in-out infinite;
+    box-shadow: 0 0 0 3px rgba(50, 180, 110, 0.14);
+    animation: pulse 2.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 3px rgba(64, 200, 130, 0.12); }
-    50% { box-shadow: 0 0 0 5px rgba(64, 200, 130, 0.18); }
+    0%, 100% { box-shadow: 0 0 0 3px rgba(50, 180, 110, 0.14); }
+    50% { box-shadow: 0 0 0 6px rgba(50, 180, 110, 0.06); }
   }
   .status-dot-testnet {
     background: rgb(var(--warning));
-    box-shadow: 0 0 0 3px rgba(230, 180, 70, 0.12);
+    box-shadow: 0 0 0 3px rgba(220, 170, 60, 0.14);
   }
   .status-dot-coming-soon {
     background: rgb(var(--accent));
-    box-shadow: 0 0 0 3px rgba(80, 156, 255, 0.12);
+    box-shadow: 0 0 0 3px rgba(80, 156, 255, 0.14);
   }
   .status-dot-deprecated {
     background: rgb(var(--muted-foreground));
   }
 
-  /* Refined dot grid — denser, sharper */
-  .dot-grid {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
-    background-size: 32px 32px;
-    background-position: 0 0;
+  /* Vercel-style card: hairline border, hover brightens */
+  .card {
+    border: 1px solid rgb(var(--border));
+    border-radius: 12px;
+    background: rgb(var(--background-elevated));
+    transition: border-color 200ms ease-out, background-color 200ms ease-out;
+  }
+  .card:hover {
+    border-color: rgb(var(--border-strong));
+    background: rgb(var(--muted));
   }
 
-  /* The signature mark — a tiled blended-VM motif used as decorative texture */
-  .blend-pattern {
-    background-image:
-      radial-gradient(circle 60px at 50% 50%, rgba(80, 156, 255, 0.03), transparent 70%),
-      linear-gradient(45deg, transparent 49.5%, rgba(80, 156, 255, 0.04) 49.5% 50.5%, transparent 50.5%);
-    background-size: 120px 120px, 60px 60px;
+  /* Data grid - cards separated by 1px lines */
+  .data-grid {
+    background: rgb(var(--border));
+    display: grid;
+    gap: 1px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgb(var(--border));
   }
 
-  /* Reveal animation */
+  /* Vercel-style button - subtle gradient gives depth */
+  .btn-primary {
+    background: linear-gradient(180deg, rgb(96, 168, 255) 0%, rgb(70, 145, 240) 100%);
+    color: white;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: filter 160ms ease-out, transform 160ms ease-out;
+  }
+  .btn-primary:hover {
+    filter: brightness(1.05);
+  }
+  .btn-primary:active {
+    filter: brightness(0.95);
+    transform: translateY(0.5px);
+  }
+
+  .btn-secondary {
+    background: rgb(var(--muted));
+    border: 1px solid rgb(var(--border-strong));
+    color: rgb(var(--foreground));
+    transition: background-color 160ms ease-out, border-color 160ms ease-out;
+  }
+  .btn-secondary:hover {
+    background: rgb(var(--background-elevated));
+    border-color: rgb(96, 96, 110);
+  }
+
+  /* Reveal animation - quiet, no bounce */
   .reveal {
     opacity: 0;
-    transform: translateY(8px);
-    animation: reveal 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translateY(6px);
+    animation: reveal 700ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   }
-
   @keyframes reveal {
     to {
       opacity: 1;
@@ -140,27 +194,32 @@
     }
   }
 
-  /* Subtle scrolling ticker */
+  /* Ticker */
   .ticker {
-    animation: ticker 40s linear infinite;
+    animation: ticker 60s linear infinite;
   }
   @keyframes ticker {
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
 
-  /* Grid border lines — the data-table backbone */
-  .data-grid {
-    background: rgb(var(--border));
-    display: grid;
-    gap: 1px;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    border: 1px solid rgb(var(--border));
+  /* Subtle grid pattern - very low opacity */
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
 
-  /* Glow ring for important badges */
-  .accent-glow {
-    box-shadow: 0 0 24px rgba(80, 156, 255, 0.2), inset 0 0 0 1px rgba(80, 156, 255, 0.3);
+  /* Hairline divider */
+  .hairline {
+    border-top: 1px solid rgb(var(--border));
+  }
+
+  /* Numeric display - the Vercel data treatment */
+  .num-display {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
   }
 }

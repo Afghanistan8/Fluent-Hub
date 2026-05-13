@@ -19,6 +19,7 @@ const config: Config = {
         border: "rgb(var(--border) / <alpha-value>)",
         "border-strong": "rgb(var(--border-strong) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
+        "accent-muted": "rgb(var(--accent-muted) / <alpha-value>)",
         "accent-foreground": "rgb(var(--accent-foreground) / <alpha-value>)",
         success: "rgb(var(--success) / <alpha-value>)",
         warning: "rgb(var(--warning) / <alpha-value>)",
@@ -29,7 +30,7 @@ const config: Config = {
         mono: ["var(--font-geist-mono)", "monospace"],
       },
       fontSize: {
-        "2xs": ["0.6875rem", { lineHeight: "1rem", letterSpacing: "0.03em" }],
+        "2xs": ["11px", { lineHeight: "1", letterSpacing: "0.12em" }],
       },
       letterSpacing: {
         tightest: "-0.04em",

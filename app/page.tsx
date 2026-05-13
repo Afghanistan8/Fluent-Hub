@@ -2,35 +2,45 @@ import Link from "next/link";
 import { getAllDapps, getAllCategories } from "@/lib/content";
 import { CATEGORY_LABELS, CATEGORY_DESCRIPTIONS } from "@/lib/labels";
 import { DappCard } from "@/components/DappCard";
-import { ArrowRight, ArrowUpRight, Compass, Trophy, BarChart3 } from "lucide-react";
+import { getFluentFees, formatUsd } from "@/lib/fluent-api";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
-export default function HomePage() {
-  const allDapps = getAllDapps();
-  const featured = allDapps.filter((d) => d.featured).slice(0, 8);
+export const revalidate = 3600;
+
+export default async function HomePage() {
+  const [fluentFees, allDapps] = await Promise.all([
+    getFluentFees(),
+    Promise.resolve(getAllDapps()),
+  ]);
+  const featured = allDapps.filter((d) => d.featured).slice(0, 6);
   const categories = getAllCategories();
   const liveCount = allDapps.filter((d) => d.status === "live").length;
 
   return (
     <>
-      <Hero liveCount={liveCount} totalCount={allDapps.length} categoryCount={categories.length} />
+      <Hero
+        liveCount={liveCount}
+        totalCount={allDapps.length}
+        categoryCount={categories.length}
+        revenueUsd={fluentFees.ok ? fluentFees.totalFeeUsd : null}
+      />
 
       <Ticker dapps={allDapps} />
 
       {featured.length > 0 && (
-        <section className="border-t border-border">
-          <div className="container-wide py-16">
+        <section>
+          <div className="container-wide py-24">
             <SectionHeader
               eyebrow="Featured"
-              title="Worth your attention"
-              description="Hand-picked projects across the ecosystem."
+              title="Worth your attention."
               cta={{ href: "/dapps", label: "View all" }}
             />
-            <div className="data-grid sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {featured.map((dapp, i) => (
                 <div
                   key={dapp.slug}
-                  className="reveal bg-background"
-                  style={{ animationDelay: `${i * 40}ms` }}
+                  className="reveal"
+                  style={{ animationDelay: `${i * 50}ms` }}
                 >
                   <DappCard dapp={dapp} />
                 </div>
@@ -40,27 +50,29 @@ export default function HomePage() {
         </section>
       )}
 
-      <ThreePillars />
+      <Pillars />
 
       <section className="border-t border-border">
-        <div className="container-wide py-16">
+        <div className="container-wide py-24">
           <SectionHeader
             eyebrow="Categories"
-            title="Browse the ecosystem"
-            description="Filter by what each project does."
+            title="Browse by what each project does."
           />
-          <div className="data-grid sm:grid-cols-2 lg:grid-cols-4">
-            {categories.map((cat) => (
+          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((cat, i) => (
               <Link
                 key={cat}
                 href={`/categories/${cat}`}
-                className="group flex flex-col gap-2 bg-background p-5 hover-bright hover:bg-muted/50"
+                className="card group reveal flex flex-col gap-3 p-6"
+                style={{ animationDelay: `${i * 40}ms` }}
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold tracking-tight">{CATEGORY_LABELS[cat]}</h3>
-                  <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                  <h3 className="text-[15px] font-semibold tracking-tight">
+                    {CATEGORY_LABELS[cat]}
+                  </h3>
+                  <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
                 </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">
+                <p className="text-[13px] leading-relaxed text-muted-foreground">
                   {CATEGORY_DESCRIPTIONS[cat]}
                 </p>
               </Link>
@@ -78,65 +90,102 @@ function Hero({
   liveCount,
   totalCount,
   categoryCount,
+  revenueUsd,
 }: {
   liveCount: number;
   totalCount: number;
   categoryCount: number;
+  revenueUsd: number | null;
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border">
-      <div className="container-wide relative py-24 sm:py-32">
-        <div className="flex flex-col gap-8">
+      {/* Subtle ambient gradient */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-accent/[0.06] to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 grid-bg opacity-40"
+      />
+
+      <div className="container-wide relative py-28 sm:py-36">
+        <div className="flex flex-col gap-10">
+          {/* Status pill */}
           <div className="reveal flex items-center gap-2">
             <span className="status-dot status-dot-live" />
-            <span className="font-mono text-2xs uppercase tracking-wider text-muted-foreground">
-              Fluent Mainnet · Live
-            </span>
+            <span className="eyebrow">Fluent Mainnet — Live</span>
           </div>
 
+          {/* The headline - the moment */}
           <h1
-            className="reveal max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl"
-            style={{ animationDelay: "60ms" }}
+            className="reveal max-w-[6em] text-[clamp(2.75rem,7vw,7.5rem)] font-semibold leading-[0.92] tracking-tightest"
+            style={{ animationDelay: "80ms" }}
           >
-            The front door
+            Everything Fluent,
             <br />
-            to the <span className="text-accent">Fluent</span> ecosystem.
+            <span className="text-muted-foreground">in one place.</span>
           </h1>
 
+          {/* Subhead */}
           <p
-            className="reveal max-w-2xl text-base leading-relaxed text-subtle sm:text-lg"
-            style={{ animationDelay: "120ms" }}
+            className="reveal max-w-xl text-[17px] leading-relaxed text-subtle"
+            style={{ animationDelay: "140ms" }}
           >
-            Every dApp on Fluent, indexed and standardized. Reputation leaderboards and
-            network comparison live next to the directory.
+            An independent hub for the Fluent ecosystem. Live network metrics from{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
+              api.fluent.xyz
+            </code>
+            , every dApp indexed and standardized, reputation infrastructure on the way.
           </p>
 
+          {/* CTAs */}
           <div
-            className="reveal flex flex-wrap items-center gap-2"
-            style={{ animationDelay: "180ms" }}
+            className="reveal flex flex-wrap items-center gap-3"
+            style={{ animationDelay: "200ms" }}
           >
             <Link
               href="/dapps"
-              className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+              className="btn-primary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium"
             >
               Explore the directory
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link
-              href="/leaderboards"
-              className="inline-flex items-center gap-2 rounded-md border border-border-strong bg-muted px-5 py-2.5 text-sm font-medium text-foreground hover-bright hover:bg-background-elevated"
+              href="/network"
+              className="btn-secondary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium hover-bright"
             >
-              View leaderboards
+              See live network data
             </Link>
           </div>
 
+          {/* Data strip - the system status, horizontal */}
           <div
-            className="reveal mt-8 grid grid-cols-3 gap-8 border-t border-border pt-8 sm:flex sm:gap-12"
-            style={{ animationDelay: "240ms" }}
+            className="reveal mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4"
+            style={{ animationDelay: "260ms" }}
           >
-            <Stat value={liveCount} label="Live dApps" />
-            <Stat value={categoryCount} label="Categories" />
-            <Stat value={totalCount} label="Tracked total" />
+            <DataCell
+              label="Live dApps"
+              value={liveCount.toString().padStart(2, "0")}
+              sublabel={`of ${totalCount} tracked`}
+            />
+            <DataCell
+              label="Categories"
+              value={categoryCount.toString().padStart(2, "0")}
+              sublabel="ecosystem segments"
+            />
+            <DataCell
+              label="Protocol revenue"
+              value={revenueUsd !== null ? formatUsd(revenueUsd) : "—"}
+              sublabel="cumulative · live"
+              highlight={revenueUsd !== null}
+            />
+            <DataCell
+              label="Data source"
+              value="api.fluent.xyz"
+              sublabel="refreshed hourly"
+              mono
+            />
           </div>
         </div>
       </div>
@@ -144,40 +193,57 @@ function Hero({
   );
 }
 
-function Stat({ value, label }: { value: number; label: string }) {
+function DataCell({
+  label,
+  value,
+  sublabel,
+  highlight = false,
+  mono = false,
+}: {
+  label: string;
+  value: string;
+  sublabel: string;
+  highlight?: boolean;
+  mono?: boolean;
+}) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="tabular text-3xl font-semibold tracking-tight sm:text-4xl">
-        {value.toString().padStart(2, "0")}
+    <div className="flex flex-col gap-2 bg-background p-6">
+      <span className="eyebrow">{label}</span>
+      <span
+        className={
+          mono
+            ? "num-display font-mono text-[15px] text-foreground"
+            : highlight
+            ? "num-display text-[28px] font-semibold text-accent"
+            : "num-display text-[28px] font-semibold text-foreground"
+        }
+      >
+        {value}
       </span>
-      <span className="font-mono text-2xs uppercase tracking-wider text-muted-foreground">
-        {label}
-      </span>
+      <span className="text-[12px] text-muted-foreground">{sublabel}</span>
     </div>
   );
 }
 
-/** Auto-scrolling marquee of project names — gives the page a "live" feel */
 function Ticker({ dapps }: { dapps: ReturnType<typeof getAllDapps> }) {
   if (dapps.length === 0) return null;
-  const items = [...dapps, ...dapps]; // duplicate for seamless loop
+  const items = [...dapps, ...dapps];
 
   return (
-    <div className="overflow-hidden border-b border-border bg-background/40">
+    <div className="overflow-hidden border-b border-border">
       <div className="flex">
-        <div className="ticker flex shrink-0 items-center gap-8 py-3 pr-8">
+        <div className="ticker flex shrink-0 items-center gap-10 py-3 pr-10">
           {items.map((dapp, i) => (
             <div
               key={`${dapp.slug}-${i}`}
-              className="flex shrink-0 items-center gap-2 font-mono text-2xs uppercase tracking-wider text-muted-foreground"
+              className="flex shrink-0 items-center gap-2 text-[12px] text-muted-foreground"
             >
               <span className="status-dot status-dot-live" />
-              <span>{dapp.name}</span>
+              <span className="font-medium text-foreground/80">{dapp.name}</span>
               <span className="text-muted-foreground/40">·</span>
-              <span className="text-muted-foreground/60">
+              <span className="font-mono uppercase tracking-wider text-[10px]">
                 {dapp.category}
               </span>
-              <span className="mx-4 text-muted-foreground/30">/</span>
             </div>
           ))}
         </div>
@@ -186,140 +252,123 @@ function Ticker({ dapps }: { dapps: ReturnType<typeof getAllDapps> }) {
   );
 }
 
-function ThreePillars() {
-  return (
-    <section className="relative border-t border-border">
-      <div className="container-wide py-20">
-        <div className="mb-12 max-w-2xl">
-          <span className="font-mono text-2xs uppercase tracking-wider text-accent">
-            What you get here
-          </span>
-          <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-            Three views of the
-            <br />
-            same ecosystem.
-          </h2>
-        </div>
+function Pillars() {
+  const pillars = [
+    {
+      number: "01",
+      title: "Directory",
+      description:
+        "Every dApp on Fluent with a standardized 'how to participate' template. No marketing fluff.",
+      href: "/dapps",
+      cta: "Browse dApps",
+      status: "live" as const,
+    },
+    {
+      number: "02",
+      title: "Network",
+      description:
+        "Live protocol revenue from api.fluent.xyz. Benchmarked against zk-rollup peers.",
+      href: "/network",
+      cta: "See live data",
+      status: "live" as const,
+    },
+    {
+      number: "03",
+      title: "Leaderboards",
+      description:
+        "Multi-context reputation rankings. Architecture ready, awaiting public Prints contract.",
+      href: "/leaderboards",
+      cta: "View plan",
+      status: "soon" as const,
+    },
+  ];
 
-        <div className="data-grid lg:grid-cols-3">
-          <Pillar
-            number="01"
-            icon={<Compass className="h-4 w-4" />}
-            title="Directory"
-            description="Every dApp on Fluent with a standardized 'how to participate' template. No marketing fluff — just the six things you actually need to know."
-            href="/dapps"
-            cta="Browse dApps"
-            status="live"
-          />
-          <Pillar
-            number="02"
-            icon={<Trophy className="h-4 w-4" />}
-            title="Leaderboards"
-            description="Multi-context reputation rankings — DeFi, predictors, per-project fandom. Architecture ready, awaiting public Prints contract."
-            href="/leaderboards"
-            cta="View leaderboards"
-            status="soon"
-          />
-          <Pillar
-            number="03"
-            icon={<BarChart3 className="h-4 w-4" />}
-            title="Network"
-            description="Fluent benchmarked against zk-rollup peers. Live revenue from api.fluent.xyz, TVL and activity from DefiLlama."
-            href="/network"
-            cta="See live data"
-            status="live"
-          />
+  return (
+    <section className="border-t border-border">
+      <div className="container-wide py-24">
+        <SectionHeader eyebrow="Built around" title="Three views of one ecosystem." />
+        <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {pillars.map((p, i) => (
+            <Link
+              key={p.number}
+              href={p.href}
+              className="card group reveal flex flex-col gap-5 p-7"
+              style={{ animationDelay: `${i * 70}ms` }}
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[12px] tabular text-muted-foreground">
+                  {p.number}
+                </span>
+                <span
+                  className={
+                    p.status === "live"
+                      ? "flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-success"
+                      : "flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-wider text-muted-foreground"
+                  }
+                >
+                  <span
+                    className={
+                      p.status === "live"
+                        ? "status-dot status-dot-live"
+                        : "status-dot status-dot-coming-soon"
+                    }
+                  />
+                  {p.status === "live" ? "Live" : "Soon"}
+                </span>
+              </div>
+              <h3 className="text-[24px] font-semibold tracking-tight">{p.title}</h3>
+              <p className="flex-1 text-[14px] leading-relaxed text-muted-foreground">
+                {p.description}
+              </p>
+              <div className="flex items-center gap-1.5 text-[13px] text-foreground transition-transform group-hover:translate-x-0.5">
+                {p.cta}
+                <ArrowRight className="h-3.5 w-3.5" />
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
-function Pillar({
-  number,
-  icon,
-  title,
-  description,
-  href,
-  cta,
-  status,
-}: {
-  number: string;
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  href: string;
-  cta: string;
-  status: "live" | "soon";
-}) {
-  return (
-    <Link
-      href={href}
-      className="group flex flex-col gap-4 bg-background p-7 hover-bright hover:bg-muted/30"
-    >
-      <div className="flex items-center justify-between">
-        <span className="font-mono text-2xs uppercase tracking-wider text-muted-foreground">
-          {number}
-        </span>
-        <span
-          className={
-            status === "live"
-              ? "flex items-center gap-1.5 font-mono text-2xs uppercase tracking-wider text-success"
-              : "flex items-center gap-1.5 font-mono text-2xs uppercase tracking-wider text-muted-foreground"
-          }
-        >
-          <span
-            className={
-              status === "live" ? "status-dot status-dot-live" : "status-dot status-dot-coming-soon"
-            }
-          />
-          {status === "live" ? "Live" : "Coming soon"}
-        </span>
-      </div>
-      <div className="flex items-center gap-2 text-accent">{icon}</div>
-      <h3 className="text-xl font-semibold tracking-tight">{title}</h3>
-      <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{description}</p>
-      <div className="flex items-center gap-1.5 text-sm text-foreground transition-transform group-hover:translate-x-0.5">
-        {cta}
-        <ArrowRight className="h-3.5 w-3.5" />
-      </div>
-    </Link>
-  );
-}
-
 function CtaSection() {
   return (
     <section className="border-t border-border">
-      <div className="container-wide py-20">
-        <div className="relative overflow-hidden rounded-xl border border-border bg-muted/20 p-10 sm:p-16">
-          <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-accent/10 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-accent/5 blur-3xl" />
-          <div className="relative flex flex-col gap-4">
-            <span className="font-mono text-2xs uppercase tracking-wider text-accent">
-              Building on Fluent
-            </span>
-            <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+      <div className="container-wide py-24">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-background-elevated">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 grid-bg opacity-50"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
+          />
+          <div className="relative flex flex-col gap-6 p-10 sm:p-14">
+            <span className="eyebrow eyebrow-accent">Building on Fluent</span>
+            <h2 className="max-w-2xl text-[36px] font-semibold leading-[1.05] tracking-tight sm:text-[48px]">
               Get your project listed
               <br />
               in the directory.
             </h2>
-            <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
+            <p className="max-w-xl text-[15px] leading-relaxed text-muted-foreground">
               Listings are managed via pull request. Open one with your project&apos;s details
               and we&apos;ll review within 48 hours.
             </p>
-            <div className="mt-4 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-3">
               <Link
                 href="/submit"
-                className="inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90"
+                className="btn-primary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium"
               >
                 Submit your dApp
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
               <a
-                href="https://github.com"
+                href="https://github.com/Afghanistan8/fluent-hub"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-md border border-border-strong bg-muted px-5 py-2.5 text-sm font-medium text-foreground hover-bright hover:bg-background-elevated"
+                className="btn-secondary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium hover-bright"
               >
                 View on GitHub
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -335,25 +384,24 @@ function CtaSection() {
 function SectionHeader({
   eyebrow,
   title,
-  description,
   cta,
 }: {
   eyebrow: string;
   title: string;
-  description: string;
   cta?: { href: string; label: string };
 }) {
   return (
-    <div className="mb-8 flex items-end justify-between gap-4">
-      <div className="flex flex-col gap-2">
-        <span className="font-mono text-2xs uppercase tracking-wider text-accent">{eyebrow}</span>
-        <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h2>
-        <p className="text-sm text-muted-foreground">{description}</p>
+    <div className="flex items-end justify-between gap-4">
+      <div className="flex flex-col gap-3">
+        <span className="eyebrow eyebrow-accent">{eyebrow}</span>
+        <h2 className="text-[36px] font-semibold leading-[1.05] tracking-tight sm:text-[44px]">
+          {title}
+        </h2>
       </div>
       {cta && (
         <Link
           href={cta.href}
-          className="hidden items-center gap-1 text-sm text-muted-foreground hover:text-foreground sm:inline-flex"
+          className="hidden items-center gap-1 text-[13px] text-muted-foreground hover:text-foreground sm:inline-flex"
         >
           {cta.label}
           <ArrowRight className="h-3 w-3" />

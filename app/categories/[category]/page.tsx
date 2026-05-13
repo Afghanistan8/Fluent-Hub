@@ -37,31 +37,33 @@ export default async function CategoryPage({
   const dapps = getDappsByCategory(cat);
 
   return (
-    <div className="container-wide py-14">
+    <div className="container-wide py-20">
       <Link
         href="/dapps"
-        className="mb-8 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="mb-10 inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         All dApps
       </Link>
-      <div className="mb-10 flex flex-col gap-3">
-        <span className="font-mono text-2xs uppercase tracking-wider text-accent">Category</span>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {CATEGORY_LABELS[cat]}
+      <div className="mb-14 flex flex-col gap-3">
+        <span className="eyebrow eyebrow-accent">Category</span>
+        <h1 className="text-[44px] font-semibold leading-[1.05] tracking-tight sm:text-[56px]">
+          {CATEGORY_LABELS[cat]}.
         </h1>
-        <p className="max-w-2xl text-sm text-muted-foreground">{CATEGORY_DESCRIPTIONS[cat]}</p>
+        <p className="max-w-xl text-[15px] text-muted-foreground">
+          {CATEGORY_DESCRIPTIONS[cat]}
+        </p>
       </div>
 
       {dapps.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No dApps in this category yet.</p>
+        <p className="text-[14px] text-muted-foreground">No dApps in this category yet.</p>
       ) : (
-        <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {dapps.map((dapp, i) => (
             <div
               key={dapp.slug}
-              className="reveal bg-background"
-              style={{ animationDelay: `${i * 40}ms` }}
+              className="reveal"
+              style={{ animationDelay: `${i * 50}ms` }}
             >
               <DappCard dapp={dapp} />
             </div>
