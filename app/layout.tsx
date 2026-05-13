@@ -15,13 +15,61 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} dark`}>
+    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
       <body className="font-sans">
+        <BackgroundRings />
         <Nav />
-        <main className="relative">{children}</main>
+        <main className="relative z-10">{children}</main>
         <Footer />
       </body>
     </html>
+  );
+}
+
+/**
+ * Stylized geometric reference to Fluent's blended execution motif.
+ * Three overlapping rings represent the three VMs (EVM + SVM + Wasm).
+ * Positioned bottom-right at low opacity as decorative atmosphere.
+ * Not Fluent's actual logo — a defensible visual reference to their thesis.
+ */
+function BackgroundRings() {
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+    >
+      <svg
+        className="absolute -right-40 -bottom-40 opacity-[0.05]"
+        width="800"
+        height="800"
+        viewBox="0 0 800 800"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="280" cy="400" r="220" stroke="rgb(var(--accent))" strokeWidth="1.5" />
+        <circle cx="400" cy="320" r="220" stroke="rgb(var(--accent))" strokeWidth="1.5" />
+        <circle cx="520" cy="400" r="220" stroke="rgb(var(--accent))" strokeWidth="1.5" />
+        <circle cx="280" cy="400" r="140" stroke="rgb(var(--accent))" strokeWidth="0.75" />
+        <circle cx="400" cy="320" r="140" stroke="rgb(var(--accent))" strokeWidth="0.75" />
+        <circle cx="520" cy="400" r="140" stroke="rgb(var(--accent))" strokeWidth="0.75" />
+        <circle cx="280" cy="400" r="60" stroke="rgb(var(--accent))" strokeWidth="0.5" />
+        <circle cx="400" cy="320" r="60" stroke="rgb(var(--accent))" strokeWidth="0.5" />
+        <circle cx="520" cy="400" r="60" stroke="rgb(var(--accent))" strokeWidth="0.5" />
+      </svg>
+      <svg
+        className="absolute -left-32 -top-32 opacity-[0.04]"
+        width="600"
+        height="600"
+        viewBox="0 0 600 600"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle cx="200" cy="300" r="180" stroke="rgb(var(--accent))" strokeWidth="1" />
+        <circle cx="300" cy="220" r="180" stroke="rgb(var(--accent))" strokeWidth="1" />
+        <circle cx="400" cy="300" r="180" stroke="rgb(var(--accent))" strokeWidth="1" />
+      </svg>
+      <div className="absolute inset-0 grid-bg opacity-50" />
+    </div>
   );
 }
 
@@ -53,10 +101,16 @@ function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="container-wide flex h-14 items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 text-[14px] font-semibold tracking-tight">
-          <Logomark />
-          <span>Fluent Hub</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2.5 text-[14px] font-semibold tracking-tight">
+            <Logomark />
+            <span>Fluent Hub</span>
+          </Link>
+          <span className="hidden items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-accent sm:inline-flex">
+            <span className="h-1 w-1 rounded-full bg-accent" />
+            Built for Fluent
+          </span>
+        </div>
         <nav className="flex items-center gap-1 text-[13px]">
           <NavLink href="/dapps">Directory</NavLink>
           <NavLink href="/network">Network</NavLink>
@@ -86,7 +140,7 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
 
 function Footer() {
   return (
-    <footer className="mt-24 border-t border-border">
+    <footer className="relative z-10 mt-24 border-t border-border bg-background/60 backdrop-blur-sm">
       <div className="container-wide py-12">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex flex-col gap-3 max-w-sm">
@@ -113,7 +167,7 @@ function Footer() {
         </div>
         <div className="mt-12 flex items-center justify-between border-t border-border pt-6">
           <span className="eyebrow">© 2026 Fluent Hub</span>
-          <span className="eyebrow">v1.0</span>
+          <span className="eyebrow">v1.1</span>
         </div>
       </div>
     </footer>

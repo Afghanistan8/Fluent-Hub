@@ -99,71 +99,22 @@ function Hero({
 }) {
   return (
     <section className="relative overflow-hidden border-b border-border">
-      {/* Subtle ambient gradient */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 top-0 h-[600px] bg-gradient-to-b from-accent/[0.06] to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 grid-bg opacity-40"
+        className="pointer-events-none absolute inset-x-0 top-0 h-[500px] bg-gradient-to-b from-accent/[0.04] to-transparent"
       />
 
-      <div className="container-wide relative py-28 sm:py-36">
-        <div className="flex flex-col gap-10">
-          {/* Status pill */}
-          <div className="reveal flex items-center gap-2">
+      <div className="container-wide relative py-12 sm:py-16">
+        {/* METRICS FIRST — top-left, the first thing visible */}
+        <div
+          className="reveal mb-16"
+          style={{ animationDelay: "0ms" }}
+        >
+          <div className="mb-4 flex items-center gap-2">
             <span className="status-dot status-dot-live" />
-            <span className="eyebrow">Fluent Mainnet — Live</span>
+            <span className="eyebrow eyebrow-accent">Fluent Mainnet — Live</span>
           </div>
-
-          {/* The headline - the moment */}
-          <h1
-            className="reveal max-w-[6em] text-[clamp(2.75rem,7vw,7.5rem)] font-semibold leading-[0.92] tracking-tightest"
-            style={{ animationDelay: "80ms" }}
-          >
-            Everything Fluent,
-            <br />
-            <span className="text-muted-foreground">in one place.</span>
-          </h1>
-
-          {/* Subhead */}
-          <p
-            className="reveal max-w-xl text-[17px] leading-relaxed text-subtle"
-            style={{ animationDelay: "140ms" }}
-          >
-            An independent hub for the Fluent ecosystem. Live network metrics from{" "}
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
-              api.fluent.xyz
-            </code>
-            , every dApp indexed and standardized, reputation infrastructure on the way.
-          </p>
-
-          {/* CTAs */}
-          <div
-            className="reveal flex flex-wrap items-center gap-3"
-            style={{ animationDelay: "200ms" }}
-          >
-            <Link
-              href="/dapps"
-              className="btn-primary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium"
-            >
-              Explore the directory
-              <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-            <Link
-              href="/network"
-              className="btn-secondary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium hover-bright"
-            >
-              See live network data
-            </Link>
-          </div>
-
-          {/* Data strip - the system status, horizontal */}
-          <div
-            className="reveal mt-12 grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4"
-            style={{ animationDelay: "260ms" }}
-          >
+          <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4">
             <DataCell
               label="Live dApps"
               value={liveCount.toString().padStart(2, "0")}
@@ -188,6 +139,48 @@ function Hero({
             />
           </div>
         </div>
+
+        {/* Headline secondary, below the metrics */}
+        <div className="flex flex-col gap-10 pt-8">
+          <h1
+            className="reveal max-w-[6em] text-[clamp(2.5rem,6vw,5.5rem)] font-semibold leading-[0.95] tracking-tightest"
+            style={{ animationDelay: "100ms" }}
+          >
+            Everything Fluent,
+            <br />
+            <span className="text-muted-foreground">in one place.</span>
+          </h1>
+
+          <p
+            className="reveal max-w-xl text-[17px] leading-relaxed text-subtle"
+            style={{ animationDelay: "160ms" }}
+          >
+            An independent hub for the Fluent ecosystem. Live network metrics from{" "}
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-[14px]">
+              api.fluent.xyz
+            </code>
+            , every dApp indexed and standardized, reputation infrastructure on the way.
+          </p>
+
+          <div
+            className="reveal flex flex-wrap items-center gap-3"
+            style={{ animationDelay: "220ms" }}
+          >
+            <Link
+              href="/dapps"
+              className="btn-primary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium"
+            >
+              Explore the directory
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href="/network"
+              className="btn-secondary inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-[14px] font-medium hover-bright"
+            >
+              See live network data
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -207,7 +200,7 @@ function DataCell({
   mono?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-2 bg-background p-6">
+    <div className="flex flex-col gap-2 bg-background-elevated p-6">
       <span className="eyebrow">{label}</span>
       <span
         className={
@@ -230,7 +223,7 @@ function Ticker({ dapps }: { dapps: ReturnType<typeof getAllDapps> }) {
   const items = [...dapps, ...dapps];
 
   return (
-    <div className="overflow-hidden border-b border-border">
+    <div className="overflow-hidden border-b border-border bg-background-elevated/60">
       <div className="flex">
         <div className="ticker flex shrink-0 items-center gap-10 py-3 pr-10">
           {items.map((dapp, i) => (
@@ -240,7 +233,7 @@ function Ticker({ dapps }: { dapps: ReturnType<typeof getAllDapps> }) {
             >
               <span className="status-dot status-dot-live" />
               <span className="font-medium text-foreground/80">{dapp.name}</span>
-              <span className="text-muted-foreground/40">·</span>
+              <span className="text-muted-foreground/50">·</span>
               <span className="font-mono uppercase tracking-wider text-[10px]">
                 {dapp.category}
               </span>
@@ -337,13 +330,10 @@ function CtaSection() {
     <section className="border-t border-border">
       <div className="container-wide py-24">
         <div className="relative overflow-hidden rounded-2xl border border-border bg-background-elevated">
+          <div aria-hidden="true" className="absolute inset-0 grid-bg opacity-60" />
           <div
             aria-hidden="true"
-            className="absolute inset-0 grid-bg opacity-50"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-accent/10 blur-3xl"
+            className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-accent/15 blur-3xl"
           />
           <div className="relative flex flex-col gap-6 p-10 sm:p-14">
             <span className="eyebrow eyebrow-accent">Building on Fluent</span>
