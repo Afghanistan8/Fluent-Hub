@@ -70,22 +70,10 @@ export default async function PrintsPage({
         </p>
       </div>
 
-      {/* Lookup form */}
-      <section className="reveal mt-12" style={{ animationDelay: "100ms" }}>
-        <PrintsLookup initialValue={queryId ?? ""} />
-        <p className="mt-3 text-[12px] text-muted-foreground">
-          Accepts X handles (e.g.{" "}
-          <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">@blendino</code>
-          ), wallet addresses (
-          <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">0x...</code>
-          ), or Privy DIDs.
-        </p>
-      </section>
-
-      {/* Tier scale legend - now near the top for context */}
+      {/* Tier scale legend - directly below the description */}
       <section
         className="reveal mt-12 rounded-xl border border-border bg-background-elevated p-6"
-        style={{ animationDelay: "150ms" }}
+        style={{ animationDelay: "80ms" }}
       >
         <div className="mb-5 flex items-center justify-between">
           <div>
@@ -108,6 +96,18 @@ export default async function PrintsPage({
             </div>
           ))}
         </div>
+      </section>
+
+      {/* Lookup form */}
+      <section className="reveal mt-12" style={{ animationDelay: "120ms" }}>
+        <PrintsLookup initialValue={queryId ?? ""} />
+        <p className="mt-3 text-[12px] text-muted-foreground">
+          Accepts X handles (e.g.{" "}
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">@blendino</code>
+          ), wallet addresses (
+          <code className="rounded bg-muted px-1 py-0.5 font-mono text-[11px]">0x...</code>
+          ), or Privy DIDs.
+        </p>
       </section>
 
       {/* Lookup result */}
