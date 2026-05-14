@@ -3,6 +3,7 @@ import { getAllDapps, getAllCategories } from "@/lib/content";
 import { CATEGORY_LABELS, CATEGORY_DESCRIPTIONS } from "@/lib/labels";
 import { DappCard } from "@/components/DappCard";
 import { getFluentFees, formatUsd } from "@/lib/fluent-api";
+import { USDNR_METRICS } from "@/lib/usdnr";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 export const revalidate = 3600;
@@ -15,6 +16,8 @@ export default async function HomePage() {
   const featured = allDapps.filter((d) => d.featured).slice(0, 6);
   const categories = getAllCategories();
   const liveCount = allDapps.filter((d) => d.status === "live").length;
+  const totalRevenueUsd =
+    (fluentFees.ok ? fluentFees.totalFeeUsd : 0) + USDNR_METRICS.accruedRewardsUsd;
 
   return (
     <>
@@ -22,7 +25,7 @@ export default async function HomePage() {
         liveCount={liveCount}
         totalCount={allDapps.length}
         categoryCount={categories.length}
-        revenueUsd={fluentFees.ok ? fluentFees.totalFeeUsd : null}
+        revenueUsd={fluentFees.ok ? totalRevenueUsd : null}
       />
 
       <Ticker dapps={allDapps} />
