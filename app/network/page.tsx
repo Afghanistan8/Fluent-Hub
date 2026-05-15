@@ -17,6 +17,7 @@ import {
 } from "@/lib/defillama";
 import { getFluentFees, formatEth, formatUsd } from "@/lib/fluent-api";
 import { USDNR_METRICS, formatCount, formatCountUsd } from "@/lib/usdnr";
+import { getSusdnrMetrics, formatTokenSupply, SUSDNR_CONTRACT } from "@/lib/susdnr";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
@@ -33,7 +34,11 @@ function daysSinceFluentLaunch(): number {
 }
 
 export default async function NetworkPage() {
-  const [fluentFees, metrics] = await Promise.all([getFluentFees(), getCohortMetrics()]);
+  const [fluentFees, metrics, susdnr] = await Promise.all([
+    getFluentFees(),
+    getCohortMetrics(),
+    getSusdnrMetrics(),
+  ]);
 
   const indexed = metrics.filter((m) => m.indexed);
   const fluentEntry = metrics.find((m) => m.slug === "fluent");
@@ -189,6 +194,93 @@ export default async function NetworkPage() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* sUSDnr - on-chain reader from Fluentscan */}
+      <section className="mb-20">
+        <div className="mb-6 flex items-center gap-2">
+          <span
+            className={cn(
+              "status-dot",
+              susdnr.ok ? "status-dot-live" : "status-dot-deprecated"
+            )}
+          />
+          <span className="eyebrow eyebrow-accent">sUSDnr · on-chain · Fluent native</span>
+        </div>
+
+        {susdnr.ok ? (
+          <>
+            <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">
+              <UsdnrMetric
+                label="Total staked"
+                value={formatTokenSupply(susdnr.totalSupply)}
+                sublabel={`${susdnr.symbol} on Fluent`}
+                highlight
+              />
+              <UsdnrMetric
+                label="Holders"
+                value={susdnr.holders !== null ? susdnr.holders.toString() : "—"}
+                sublabel="unique addresses"
+              />
+              <UsdnrMetric
+                label="Source"
+                value="Fluentscan"
+                sublabel="auto-refreshed hourly"
+              />
+            </div>
+
+            <div className="mt-6 card flex items-start gap-4 p-6">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background">
+                <Layers className="h-4 w-4 text-accent" />
+              </div>
+              <div className="flex flex-col gap-3">
+                <div>
+                  <h3 className="text-[15px] font-semibold tracking-tight">
+                    sUSDnr — the yield-bearing wrapper on Fluent
+                  </h3>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                    sUSDnr is staked USDnr that earns yield from Upshift DeFi strategies.
+                    Unlike USDnr (which lives on Ethereum mainnet and tracks T-bill yield
+                    globally via M0), sUSDnr lives on Fluent itself and tells the Fluent-native
+                    story: how much is staked here, how many holders.
+                  </p>
+                </div>
+                <div className="flex items-start gap-3 rounded-lg border border-border bg-muted/40 p-3">
+                  <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
+                  <p className="text-[12px] leading-relaxed text-muted-foreground">
+                    <span className="text-foreground">Methodology.</span> Read directly from
+                    Fluentscan&apos;s Blockscout API (
+                    <a
+                      href={`https://fluentscan.xyz/address/${SUSDNR_CONTRACT}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-accent hover:underline"
+                    >
+                      contract
+                    </a>
+                    ) every hour. No manual updates, no third-party APIs — just direct
+                    on-chain reads from Fluent itself. APY is computed off-chain by Upshift
+                    and not displayed here to avoid stale data.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="card flex items-start gap-4 p-6">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border bg-background">
+              <Layers className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className="flex flex-col gap-2">
+              <h3 className="text-[15px] font-semibold tracking-tight">
+                sUSDnr data temporarily unavailable
+              </h3>
+              <p className="text-[13px] text-muted-foreground">
+                Couldn&apos;t reach Fluentscan: {susdnr.error}. Refreshes every hour.
+              </p>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* Combined revenue total */}
