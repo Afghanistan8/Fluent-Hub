@@ -111,6 +111,7 @@ function Nav() {
         </div>
         <nav className="flex items-center gap-1 text-[13px]">
           <NavLink href="/dapps">Directory</NavLink>
+          <NavLink href="/defi">DeFi</NavLink>
           <NavLink href="/network">Network</NavLink>
           <NavLink href="/prints">Prints</NavLink>
           <Link
@@ -152,6 +153,7 @@ function Footer() {
             <div className="flex flex-col gap-3">
               <span className="eyebrow">Explore</span>
               <Link href="/dapps" className="text-[13px] text-muted-foreground hover:text-foreground">Directory</Link>
+              <Link href="/defi" className="text-[13px] text-muted-foreground hover:text-foreground">DeFi</Link>
               <Link href="/network" className="text-[13px] text-muted-foreground hover:text-foreground">Network</Link>
               <Link href="/prints" className="text-[13px] text-muted-foreground hover:text-foreground">Prints</Link>
             </div>
